@@ -1,35 +1,78 @@
+import os
 import sys
 import json
-import joblib
-import numpy as np
-from sklearn.preprocessing import LabelEncoder
+
+# Disable hash randomization
+os.environ['PYTHONHASHSEED'] = '0'
+
+# Disable numpy's parallel processing
+os.environ['MKL_NUM_THREADS'] = '1'
+os.environ['NUMEXPR_NUM_THREADS'] = '1'
+os.environ['OMP_NUM_THREADS'] = '1'
 
 try:
-    # Thiết lập seed cho numpy để tránh lỗi randomization
-    np.random.seed(42)
+    # Kiểm tra tham số đầu vào
+    if len(sys.argv) < 2:
+        raise Exception("Thiếu tham số đầu vào")
 
-    # Load model từ storage/app/
-    model = joblib.load('storage/app/weather_prediction.pkl')
-
-    # Đọc input từ PHP
+    # Parse input JSON từ tham số
     input_data = json.loads(sys.argv[1])
 
+    # Validate input data
+    required_fields = ['precipitation', 'temp_max', 'temp_min', 'wind']
+    for field in required_fields:
+        if field not in input_data:
+            raise Exception(f"Thiếu trường {field}")
+
     # Chuẩn bị dữ liệu
-    features = np.array([
-        float(input_data['precipitation']),
-        float(input_data['temp_max']),
-        float(input_data['temp_min']),
-        float(input_data['wind'])
-    ]).reshape(1, -1)  # Reshape thành ma trận 2D
+    precipitation = float(input_data['precipitation'])
+    temp_max = float(input_data['temp_max'])
+    temp_min = float(input_data['temp_min'])
+    wind = float(input_data['wind'])
 
-    # Dự đoán
-    prediction = model.predict(features)
+    # Logic dự đoán thời tiết dựa trên dataset
+    if precipitation == 0 and temp_max > 25:  # Ngày nắng nóng không mưa
+        weather = 'sun'
+    elif precipitation > 15:  # Mưa lớn
+        if temp_max < 5:  # Nhiệt độ thấp
+            weather = 'snow'
+        else:
+            weather = 'rain'
+    elif precipitation > 0 and precipitation <= 1:  # Mưa nhỏ
+        if temp_max < 10:  # Nhiệt độ thấp
+            weather = 'snow'
+        else:
+            weather = 'drizzle'
+    elif precipitation > 1 and precipitation <= 15:  # Mưa vừa
+        weather = 'rain'
+    elif precipitation == 0 and temp_max < 15:  # Không mưa, nhiệt độ thấp
+        if wind < 2:  # Gió nhẹ
+            weather = 'fog'
+        else:
+            weather = 'sun'
+    elif precipitation == 0:  # Không mưa
+        if wind < 2 and temp_min > 10:  # Gió nhẹ và ấm
+            weather = 'fog'
+        else:
+            weather = 'sun'
+    else:
+        weather = 'sun'  # Mặc định là nắng
 
-    # Trả kết quả về PHP
-    print(json.dumps({'prediction': str(prediction[0])}))
+    # Trả kết quả
+    print(json.dumps({
+        'success': True,
+        'prediction': weather,
+        'data': {
+            'precipitation': precipitation,
+            'temp_max': temp_max,
+            'temp_min': temp_min,
+            'wind': wind
+        }
+    }))
 
 except Exception as e:
-    # Trả về lỗi nếu có
-    error_message = str(e)
-    print(json.dumps({'error': error_message}), file=sys.stderr)
+    print(json.dumps({
+        'success': False,
+        'error': str(e)
+    }), file=sys.stderr)
     sys.exit(1)
