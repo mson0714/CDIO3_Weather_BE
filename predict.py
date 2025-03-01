@@ -32,31 +32,31 @@ try:
 
     # Logic dự đoán thời tiết dựa trên dataset
     if precipitation == 0 and temp_max > 25:  # Ngày nắng nóng không mưa
-        weather = 'sun'
+        weather = 'Sun (Nắng)'
     elif precipitation > 15:  # Mưa lớn
         if temp_max < 5:  # Nhiệt độ thấp
-            weather = 'snow'
+            weather = 'Snow (Tuyết)'
         else:
-            weather = 'rain'
+            weather = 'Rain (Mưa)'
     elif precipitation > 0 and precipitation <= 1:  # Mưa nhỏ
         if temp_max < 10:  # Nhiệt độ thấp
-            weather = 'snow'
+            weather = 'Snow (Tuyết)'
         else:
-            weather = 'drizzle'
+            weather = 'Drizzle (Rơi mưa rất nhỏ)'
     elif precipitation > 1 and precipitation <= 15:  # Mưa vừa
-        weather = 'rain'
+        weather = 'Rain (Mưa)'
     elif precipitation == 0 and temp_max < 15:  # Không mưa, nhiệt độ thấp
         if wind < 2:  # Gió nhẹ
-            weather = 'fog'
+            weather = 'Fog (Sương mù)'
         else:
-            weather = 'sun'
+            weather = 'Sun (Nắng)'
     elif precipitation == 0:  # Không mưa
         if wind < 2 and temp_min > 10:  # Gió nhẹ và ấm
-            weather = 'fog'
+            weather = 'Fog (Sương mù)'
         else:
-            weather = 'sun'
+            weather = 'Sun (Nắng)'
     else:
-        weather = 'sun'  # Mặc định là nắng
+        weather = 'Sun (Nắng)'  # Mặc định là nắng
 
     # Trả kết quả
     print(json.dumps({
