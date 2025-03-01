@@ -40,7 +40,7 @@ try:
             weather = 'Rain (Mưa)'
     elif precipitation > 0 and precipitation <= 1:  # Mưa nhỏ
         if temp_max < 10:  # Nhiệt độ thấp
-            weather = 'Snow (Tuyết )'
+            weather = 'Snow (Tuyết)'
         else:
             weather = 'Drizzle (Rơi mưa rất nhỏ)'
     elif precipitation > 1 and precipitation <= 15:  # Mưa vừa
