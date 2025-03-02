@@ -10,3 +10,4 @@ Route::middleware(['api'])->group(function () {
     });
     Route::post('/predict', [WeatherController::class, 'predict']);
 });
+ 

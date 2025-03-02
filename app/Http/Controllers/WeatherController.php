@@ -69,7 +69,7 @@ class WeatherController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Lỗi khi dự đoán: ' . $e->getMessage()
+                'message' => 'Lỗi khi dự đoán : ' . $e->getMessage()
             ], 500)->header('Access-Control-Allow-Origin', '*')
                     ->header('Access-Control-Allow-Methods', '*')
                     ->header('Access-Control-Allow-Headers', '*');
