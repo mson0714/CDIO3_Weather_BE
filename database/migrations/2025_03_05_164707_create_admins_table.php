@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->id(); // Add primary key
             $table->string('ho_ten'); // Họ và tên nhân viên
             $table->string('email')->unique(); // Email duy nhất
             $table->string('so_dien_thoai')->nullable(); //
-            $table->tinyInteger('tinh_trang')->default(1);
-            $table->tinyInteger('is_admin')->default(0);
+            $table->string('tinh_trang');
+            $table->string('is_admin');
             $table->string('password');
             $table->timestamps();
         });
