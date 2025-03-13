@@ -13,3 +13,5 @@ Route::middleware(['api'])->group(function () {
 });
 
 Route::post('nguoi-dung/dang-nhap-gg', [NguoiDungController::class, 'dangNhapGG']);
+Route::post('nguoi-dung/dang-ky', [NguoiDungController::class, 'dangKy']);
+Route::post('nguoi-dung/dang-nhap', [NguoiDungController::class, 'dangNhap']);
